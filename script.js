@@ -3,6 +3,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 $(function () {
+  const body = $('body');
+
+  function closeMenu() {
+    $('.burger').removeClass('active');
+    $('.header__menu').css({
+      maxHeight: 0,
+    });
+    $('.overlay').removeClass('active');
+    body.removeClass('hidden');
+  }
+
   $('.burger').on('click', function () {
     $(this).toggleClass('active');
     $('.overlay').toggleClass('active');
@@ -11,10 +22,19 @@ $(function () {
       $('.header__menu').css({
         maxHeight: $('.header__menu').prop('scrollHeight'),
       });
+      body.addClass('hidden');
     } else {
       $('.header__menu').css({
         maxHeight: 0,
       });
+
+      body.removeClass('hidden');
+    }
+  });
+
+  $('.overlay').on('click', function () {
+    if ($(this).hasClass('active')) {
+      closeMenu();
     }
   });
 
@@ -41,12 +61,29 @@ $(function () {
     }
   });
 
-  $('.lang-list .lang-item').on('click', function(){
+  $('.lang-list .lang-item').on('click', function () {
     let parent = $(this).closest('.lang');
     let list = parent.find('.lang-list');
     let activeLang = parent.find('.lang-active .lang-item');
     activeLang.html($(this).html());
     parent.removeClass('open');
     list.slideUp(200);
-  })
+  });
+
+  $("a[href*='#']").on('click', function (e) {
+    if ($('.burger').hasClass('active')) {
+      closeMenu();
+    }
+    var anchor = $(this);
+    $('html, body')
+      .stop()
+      .animate(
+        {
+          scrollTop: $(anchor.attr('href')).offset().top,
+        },
+        777,
+      );
+    e.preventDefault();
+    return false;
+  });
 });
